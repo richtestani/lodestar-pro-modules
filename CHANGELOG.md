@@ -12,6 +12,18 @@ will silently do nothing.
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-11-06
+
+### Added
+- **Chart display options** — `horizontal: true` on a bar chart (labels
+  left, bars grow rightward, values at the bar ends), `filled: true` on a
+  donut (renders as a pie), `area: false` on a line chart (line only).
+- **Hover values** on bars, line points and pie/donut slices — a small
+  tooltip with the label and value; tap on touch. On by default; turn off
+  per chart with `tooltips: false`.
+- **`prefix` / `suffix`** per chart, applied to data values in tooltips,
+  horizontal-bar values and legends (`'$'` + `1.1` + `'M'` → `$1.1M`).
+
 ## [0.4.0] — 2026-11-06
 
 ### Added

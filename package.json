@@ -1,7 +1,7 @@
 {
   "name": "lodestar-pro-modules",
   "private": true,
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Premium modules and nav styles for Lodestar (parallax and chart modules, mega nav, section motion). Installed per-project via install.mjs — not baked into the base template. Requires lodestar >= 0.2.0; section motion needs the SectionRenderer hook added after lodestar 0.4.0.",
   "lodestarCompat": ">=0.2.0",
   "scripts": {

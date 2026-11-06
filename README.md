@@ -4,7 +4,7 @@ Premium modules and nav styles for [Lodestar](https://github.com/richtestani/lod
 Kept out of the base repo so every client site starts lean by default —
 this only exists in a project once you install it there.
 
-**v0.4.0 · requires lodestar >= 0.2.0** (section motion needs the newer SectionRenderer hook) — see `CHANGELOG.md` for release notes.
+**v0.5.0 · requires lodestar >= 0.2.0** (section motion needs the newer SectionRenderer hook) — see `CHANGELOG.md` for release notes.
 
 ## What's in here
 
@@ -145,6 +145,13 @@ any module:
 - Per chart, optional: `text` (a sentence under the label), `color` (any CSS
   color; default the theme's `--primary`; pie and donut slices use shades
   of it).
+- **Display options:** `horizontal: true` on a bar chart (values shown at
+  the end of each bar), `filled: true` on a donut (same as `type: 'pie'`),
+  `area: false` on a line chart.
+- **Hover values** appear over bars, line points and slices (tap on touch).
+  `prefix` / `suffix` format them, e.g. `prefix: '$', suffix: 'M'` turns
+  `1.1` into `$1.1M`; they also apply to horizontal-bar values and legends.
+  Turn hovers off per chart with `tooltips: false`.
 - Section options: `onSurface: true` (tinted band, like features),
   `cards: true` (each chart in a card).
 - **One chart** gets a presentation layout: the number and text on the
