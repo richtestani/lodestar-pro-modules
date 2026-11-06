@@ -4,7 +4,7 @@ Premium modules and nav styles for [Lodestar](https://github.com/richtestani/lod
 Kept out of the base repo so every client site starts lean by default —
 this only exists in a project once you install it there.
 
-**v0.2.4 · requires lodestar >= 0.2.0** — see `CHANGELOG.md` for release notes.
+**v0.3.0 · requires lodestar >= 0.2.0** (section motion needs the newer SectionRenderer hook) — see `CHANGELOG.md` for release notes.
 
 ## What's in here
 
@@ -12,6 +12,10 @@ this only exists in a project once you install it there.
   section whose background scroll-shifts against the foreground copy. Same
   prop shape as the base `hero` module, plus `speed` (0–1, default 0.35).
   Respects `prefers-reduced-motion`.
+- **Section motion** (`components/pro/SectionMotion.vue`) — every
+  top-level page section reveals as it scrolls into view, with optional
+  item stagger and full-screen-height sections. Applies to all modules
+  automatically; configured once in `config/motion.js`. See below.
 - **`mega` nav** (`components/pro/MegaNav.vue`) — top-level nav links can
   carry a `children` array, rendered as a full-width dropdown panel on
   desktop and an inline accordion in the mobile drawer.
@@ -106,6 +110,47 @@ silently-downgraded nav — see `scripts/prerender.mjs` in the base repo. In
 dev (`npm run dev`), a mega/not-installed mismatch also shows a red banner
 on the page itself, not just a console warning, since that build-time check
 doesn't run under `npm run dev`.
+
+## Section motion
+
+Unlike `parallax`, this isn't a module you add to a section list — once
+installed, it wraps every top-level page section (home, `sections` pages,
+collection pages). **Nothing animates until you turn it on** in the
+project's `src/config/motion.js`:
+
+```js
+export const motion = {
+  enabled:    true,       // reveal sections as they scroll into view
+  effect:     'rise',     // 'rise' | 'fade' | 'scale' | 'slide'
+  fullHeight: false,      // separate switch — sections at least one screen tall
+  stagger:    ['features', 'stats', 'pricing'],  // or true for every supported module
+  staggerSelectors: {},   // item selectors for your own modules, e.g. { logos: '.logo' }
+}
+```
+
+Per section, in `homeSections` / a page's `sections`:
+
+```js
+{ module: 'faq', motion: false, props: { ... } }                 // no animation here
+{ module: 'cta', motion: { effect: 'fade' }, props: { ... } }    // override any setting
+{ module: 'pricing', motion: { fullHeight: false }, props: {...} } // not full height
+```
+
+- **Stagger** cascades a module's repeating items in one after another
+  instead of moving the whole section. Built-in item selectors: features,
+  stats, testimonials, gallery, pricing, team, faq, menu, collectionGrid.
+- **Full height** uses `min-height: 100svh`, so long sections still grow,
+  and centers shorter content vertically. No scroll-snapping.
+- Whatever is on the first screen shows immediately; only sections below
+  the fold animate in.
+- Reduced-motion users see everything with no animation. The build's
+  prerender snapshot never contains hidden content.
+- Modules inside a RowLayout column are never wrapped — they aren't page
+  sections.
+
+**Requires the base repo's hook** — `SectionRenderer.vue` picking up
+`components/pro/SectionMotion.vue`, `config/motion.js`, and `motion` in
+`config/index.js`. `install.mjs` warns if the target project predates it.
 
 ## Adding more premium modules
 

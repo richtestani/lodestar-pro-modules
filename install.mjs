@@ -75,10 +75,25 @@ function verify(srcDir, destDir, label) {
 const modulesOk    = verify(path.join(HERE, 'modules/pro'), destModules, 'modules/pro')
 const componentsOk = verify(path.join(HERE, 'components/pro'), destComponents, 'components/pro')
 
+// Section motion needs a base-repo hook that older projects don't have.
+// Check for the hook itself rather than a version number — it's the
+// thing that actually has to be there.
+const rendererPath = path.join(target, 'src/components/SectionRenderer.vue')
+const hasMotionHook = fs.existsSync(rendererPath) && fs.readFileSync(rendererPath, 'utf8').includes('pro/SectionMotion.vue')
+const hasMotionConfig = fs.existsSync(path.join(target, 'src/config/motion.js'))
+
 if (modulesOk && componentsOk) {
   console.log(`✓ Installed lodestar-pro-modules v${MY_VERSION} into ${target} (verified byte-for-byte)`)
   console.log(`  src/modules/pro/     (parallax module)`)
-  console.log(`  src/components/pro/  (mega nav)`)
+  console.log(`  src/components/pro/  (mega nav, section motion)`)
   console.log(`\nNext: reference module: 'parallax' in homeSections, or set nav.style: 'mega' in site.config.js.`)
+  if (!hasMotionHook || !hasMotionConfig) {
+    console.warn(`\n! Section motion is installed but this project predates the base hook it needs:`)
+    if (!hasMotionHook)   console.warn(`  - src/components/SectionRenderer.vue doesn't pick up components/pro/SectionMotion.vue`)
+    if (!hasMotionConfig) console.warn(`  - no src/config/motion.js (and \`motion\` in config/index.js)`)
+    console.warn(`  Copy those from the current lodestar repo (see this package's README). Parallax and mega nav are unaffected.`)
+  } else {
+    console.log(`Section motion: set enabled: true in src/config/motion.js to turn it on.`)
+  }
   console.log(`Once the site is running, check the browser console for "[lodestar-pro-modules] MegaNav v${MY_VERSION}" to confirm it's actually this version in use.`)
 }

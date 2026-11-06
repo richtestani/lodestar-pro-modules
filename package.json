@@ -1,8 +1,8 @@
 {
   "name": "lodestar-pro-modules",
   "private": true,
-  "version": "0.2.4",
-  "description": "Premium modules and nav styles for Lodestar (parallax module, mega nav). Installed per-project via install.mjs — not baked into the base template. Requires lodestar >= 0.2.0 (the import.meta.glob pickup in modules/registry.js and App.vue).",
+  "version": "0.3.0",
+  "description": "Premium modules and nav styles for Lodestar (parallax module, mega nav, section motion). Installed per-project via install.mjs — not baked into the base template. Requires lodestar >= 0.2.0; section motion needs the SectionRenderer hook added after lodestar 0.4.0.",
   "lodestarCompat": ">=0.2.0",
   "scripts": {
     "install-into": "node install.mjs"

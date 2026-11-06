@@ -12,6 +12,21 @@ will silently do nothing.
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-11-06
+
+### Added
+- **Section motion** (`components/pro/SectionMotion.vue`) — sections
+  reveal as they scroll into view, applied to every top-level page section
+  automatically (no per-module config). Off until `enabled: true` in the
+  project's `config/motion.js`. Effects: `rise` (default), `fade`,
+  `scale`, `slide`. Optional item stagger per module, with built-in item
+  selectors for the base modules and `staggerSelectors` for your own.
+  `fullHeight` is a separate switch (min-height, so long sections grow).
+  Per-section `motion: false` or `motion: { ... }` overrides. The first
+  screen never waits on an animation; reduced-motion users and the
+  prerender snapshot get no hidden state. Needs the base repo's
+  SectionRenderer hook — `install.mjs` warns if it's missing.
+
 ## [0.2.4] — 2026-08-24
 
 ### Fixed
