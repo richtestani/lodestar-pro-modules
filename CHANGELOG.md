@@ -12,6 +12,19 @@ will silently do nothing.
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-11-06
+
+### Added
+- **`chart` module** (`modules/pro/ChartModule.vue`) — a presentation-style
+  section: a large headline number per chart, its label, optional text, and
+  a bar, line, donut or pie chart. One chart gets a two-column layout with a
+  big chart; two or more share a row. Animates when it scrolls into view
+  (bars grow, lines draw, rings sweep, numbers count up) with its own
+  trigger, so it works with or without section motion. Drawn as SVG in the
+  theme's `--primary` (or a per-chart `color`), so it prerenders with real
+  numbers and matches every theme. Reduced motion and the prerender
+  snapshot get the finished chart.
+
 ## [0.3.0] — 2026-11-06
 
 ### Added

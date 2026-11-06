@@ -4,7 +4,7 @@ Premium modules and nav styles for [Lodestar](https://github.com/richtestani/lod
 Kept out of the base repo so every client site starts lean by default —
 this only exists in a project once you install it there.
 
-**v0.3.0 · requires lodestar >= 0.2.0** (section motion needs the newer SectionRenderer hook) — see `CHANGELOG.md` for release notes.
+**v0.4.0 · requires lodestar >= 0.2.0** (section motion needs the newer SectionRenderer hook) — see `CHANGELOG.md` for release notes.
 
 ## What's in here
 
@@ -12,6 +12,9 @@ this only exists in a project once you install it there.
   section whose background scroll-shifts against the foreground copy. Same
   prop shape as the base `hero` module, plus `speed` (0–1, default 0.35).
   Respects `prefers-reduced-motion`.
+- **`chart` module** (`modules/pro/ChartModule.vue`) — presentation-style
+  charts: a big headline number, label and a bar, line, donut or pie chart
+  that animates in. One chart or several in a row. See below.
 - **Section motion** (`components/pro/SectionMotion.vue`) — every
   top-level page section reveals as it scrolls into view, with optional
   item stagger and full-screen-height sections. Applies to all modules
@@ -110,6 +113,43 @@ silently-downgraded nav — see `scripts/prerender.mjs` in the base repo. In
 dev (`npm run dev`), a mega/not-installed mismatch also shows a red banner
 on the page itself, not just a console warning, since that build-time check
 doesn't run under `npm run dev`.
+
+## Chart module
+
+A section of one or more charts, each led by a large number. Add it like
+any module:
+
+```js
+{ module: 'chart', props: {
+    eyebrow: 'Growth',
+    title:   'Our numbers keep going up',
+    intro:   'Four years of steady progress.',   // optional
+    charts: [
+      { value: '2,400+', label: 'Clients served', type: 'bar',
+        data: [ { label: '2022', value: 640 }, { label: '2023', value: 1180 },
+                { label: '2024', value: 1790 }, { label: '2025', value: 2400 } ] },
+      { value: '98%', label: 'Client retention', type: 'donut', data: 98 },
+      { value: '$4.2M', label: 'Revenue managed', type: 'line',
+        data: { Q1: 1.1, Q2: 1.9, Q3: 2.6, Q4: 4.2 } },
+    ],
+}}
+```
+
+- **`type`**: `bar` (default), `line`, `donut`, `pie`.
+- **`data`**: a list of `{ label, value }`, or an object `{ label: value }`.
+  For a donut or pie, a single number draws a progress ring out of `max`
+  (default 100); several values draw slices with a legend.
+- **`value`** is the headline and counts up when the chart appears. Text
+  around the number is kept (`$4.2M`, `2,400+`, `4.9/5`). It's display
+  text, so it doesn't have to match the data.
+- Per chart, optional: `text` (a sentence under the label), `color` (any CSS
+  color; default the theme's `--primary`; pie and donut slices use shades
+  of it).
+- Section options: `onSurface: true` (tinted band, like features),
+  `cards: true` (each chart in a card).
+- **One chart** gets a presentation layout: the number and text on the
+  left, a large chart on the right, stacking on phones. **Two or more**
+  sit side by side and wrap as needed.
 
 ## Section motion
 

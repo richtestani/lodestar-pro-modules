@@ -6,7 +6,9 @@
 // Same shape as the base registry: name → component.
 // ============================================================
 import ParallaxModule from './ParallaxModule.vue'
+import ChartModule    from './ChartModule.vue'
 
 export const proModuleRegistry = {
   parallax: ParallaxModule,
+  chart:    ChartModule,
 }
