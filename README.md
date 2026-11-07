@@ -4,7 +4,7 @@ Premium modules and nav styles for [Lodestar](https://github.com/richtestani/lod
 Kept out of the base repo so every client site starts lean by default —
 this only exists in a project once you install it there.
 
-**v0.5.0 · requires lodestar >= 0.2.0** (section motion needs the newer SectionRenderer hook) — see `CHANGELOG.md` for release notes.
+**v0.6.0 · requires lodestar >= 0.2.0** (section motion needs the newer SectionRenderer hook) — see `CHANGELOG.md` for release notes.
 
 ## What's in here
 
@@ -15,6 +15,10 @@ this only exists in a project once you install it there.
 - **`chart` module** (`modules/pro/ChartModule.vue`) — presentation-style
   charts: a big headline number, label and a bar, line, donut or pie chart
   that animates in. One chart or several in a row. See below.
+- **`tourDates` module** (`modules/pro/TourDatesModule.vue`) — a
+  performer's show listing with month grouping, ticket links, status
+  badges, a compact "next shows" layout and `MusicEvent` structured
+  data. See below.
 - **Section motion** (`components/pro/SectionMotion.vue`) — every
   top-level page section reveals as it scrolls into view, with optional
   item stagger and full-screen-height sections. Applies to all modules
@@ -157,6 +161,86 @@ any module:
 - **One chart** gets a presentation layout: the number and text on the
   left, a large chart on the right, stacking on phones. **Two or more**
   sit side by side and wrap as needed.
+
+## Tour dates module
+
+A performer's show listing: upcoming shows sorted by date and grouped by
+month, past shows in a collapsed list, ticket buttons, sold-out /
+cancelled / free badges, an optional featured "next show" card, and
+schema.org `MusicEvent` structured data so shows can appear in Google's
+event listings.
+
+Put the shows in a sitewide module default so every `tourDates` instance
+shares one list — a full listing on `/shows` and a "next 3" strip on the
+home page, both edited in one place:
+
+```js
+// config/modules/tourDates.js   (+ import it into moduleDefaults in config/index.js)
+export default {
+  performer: 'Jenna Hale',      // structured data; defaults to site.brand.name
+  performerType: 'Person',      // 'MusicGroup' (default) | 'Person'
+  shows: [
+    { date: '2026-12-05', time: '9:00 PM',
+      venue: 'The Pour House', city: 'Raleigh', region: 'NC',
+      address: '224 S Blount St',            // optional, street only → map link
+      price: '$12 adv / $15 door',           // public ticket price, free text
+      ticketUrl: 'https://…',
+      status: 'on-sale',                     // on-sale | sold-out | cancelled | postponed | free
+      image: 'pour-house.jpg',               // optional — used by featureNext
+      note: 'w/ special guest' },
+    { date: '2026-12-12', venue: 'Kings', city: 'Raleigh', region: 'NC', status: 'sold-out' },
+  ],
+}
+```
+
+```js
+// a full listing page
+{ slug: 'shows', name: 'Shows', view: 'rows', rows: [
+  { flush: true, modules: [
+    { module: 'tourDates', props: { eyebrow: 'On tour', title: 'Upcoming shows', featureNext: true } },
+  ]},
+]}
+
+// a compact strip on the home page
+{ module: 'tourDates', props: {
+    title: 'Next shows', layout: 'compact', surface: true,
+    moreLink: { label: 'All dates', to: '/shows' } } }
+```
+
+**Per show:** `date` (`'YYYY-MM-DD'`, required — anything else is skipped
+with a dev warning), `endDate` (multi-day), `time` (free text; `8pm`,
+`8:00 PM` and `20:00` are all understood for structured data), `venue`,
+`city`, `region`, `country`, `address`, `price`, `ticketUrl`, `status`,
+`image`, `note`, `name` (overrides the event name, default "Performer at
+Venue"), `map: true` (map link from venue + city when there's no
+address), `mapUrl` (your own link).
+
+**Module props:** `layout` (`'list'` | `'compact'`), `limit` (compact
+defaults to 3), `groupByMonth` (on for list, off for compact),
+`featureNext` (next show as a big card — only when it has an `image`),
+`past` (`'collapsed'` | `'open'` | `false`; compact hides past shows),
+`pastLimit` (12), `moreLink`, `surface`, `ticketLabel`, `nextLabel`,
+`pastLabel`, `emptyText`, `statusLabels` (override badge text),
+`locale` (`'en-US'`), `schema`, `performer`, `performerType`,
+`currency` (`'USD'`).
+
+**Upcoming vs. past is decided in the visitor's browser**, so a show moves
+to the past list the day after it happens without a rebuild; a show stays
+"upcoming" through its date (or `endDate`). The prerendered HTML that
+crawlers read reflects the day you built — rebuild occasionally to keep
+it fresh.
+
+**Structured data:** one JSON-LD block of upcoming shows is added to the
+page `<head>` (and baked into the prerendered HTML). On by default for
+`layout: 'list'`, off for `'compact'` so a home strip doesn't duplicate
+the shows page; force either way with `schema: true|false`. Cancelled and
+postponed shows are marked with the matching `eventStatus`; sold-out
+shows get `SoldOut` availability. The first number in `price` becomes the
+offer price. Check a live page with Google's Rich Results Test.
+
+**Keep private details out.** Everything in config ships in the site's
+JavaScript, so don't put performance fees, private-event dates or contact
+details here.
 
 ## Section motion
 

@@ -12,6 +12,18 @@ will silently do nothing.
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-11-07
+
+### Added
+- **`tourDates` module** (`modules/pro/TourDatesModule.vue`) — upcoming
+  shows sorted and grouped by month, past shows in a collapsed list,
+  ticket buttons, `sold-out` / `cancelled` / `postponed` / `free` badges,
+  map links, an optional featured next-show card (`featureNext`), and a
+  `compact` layout for a home-page strip. Upcoming vs. past is computed
+  in the browser, so shows age out without a rebuild. Emits schema.org
+  `MusicEvent` JSON-LD for the list layout. Share one show list across
+  instances via `config/modules/tourDates.js`.
+
 ## [0.5.0] — 2026-11-06
 
 ### Added
