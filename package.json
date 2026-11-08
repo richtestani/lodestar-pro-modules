@@ -1,8 +1,8 @@
 {
   "name": "lodestar-pro-modules",
   "private": true,
-  "version": "0.6.0",
-  "description": "Premium modules and nav styles for Lodestar (parallax, chart and tourDates modules, mega nav, section motion). Installed per-project via install.mjs — not baked into the base template. Requires lodestar >= 0.2.0; section motion needs the SectionRenderer hook added after lodestar 0.4.0.",
+  "version": "0.7.0",
+  "description": "Premium modules and nav styles for Lodestar (parallax, chart and tourDates modules, mega nav with 8 presets, section motion). Installed per-project via install.mjs \u2014 not baked into the base template. Requires lodestar >= 0.2.0; section motion needs the SectionRenderer hook added after lodestar 0.4.0.",
   "lodestarCompat": ">=0.2.0",
   "scripts": {
     "install-into": "node install.mjs"

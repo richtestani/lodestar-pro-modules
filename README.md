@@ -4,7 +4,7 @@ Premium modules and nav styles for [Lodestar](https://github.com/richtestani/lod
 Kept out of the base repo so every client site starts lean by default —
 this only exists in a project once you install it there.
 
-**v0.6.0 · requires lodestar >= 0.2.0** (section motion needs the newer SectionRenderer hook) — see `CHANGELOG.md` for release notes.
+**v0.7.0 · requires lodestar >= 0.2.0** (section motion needs the newer SectionRenderer hook) — see `CHANGELOG.md` for release notes.
 
 ## What's in here
 
@@ -25,7 +25,8 @@ this only exists in a project once you install it there.
   automatically; configured once in `config/motion.js`. See below.
 - **`mega` nav** (`components/pro/MegaNav.vue`) — top-level nav links can
   carry a `children` array, rendered as a full-width dropdown panel on
-  desktop and an inline accordion in the mobile drawer.
+  desktop and an inline accordion in the mobile drawer. Eight built-in
+  looks (`megaPreset`), each adjustable one option at a time. See below.
 
 ## Installing into a project
 
@@ -67,6 +68,7 @@ nav: {
   trigger:    'click',   // 'click' | 'hover' — hover only applies when overlay is true
   overlay:    true,      // true = panel floats over the page; false = pushes content down inline
   megaLayout: 'wide',    // 'wide' | 'stacked'
+  megaPreset: 'classic', // look — see "Mega nav looks" below
   hoverBg:    '#f4efe6', // shared with the base nav styles too — optional
   hoverText:  '#c0392b',
   links: [
@@ -117,6 +119,66 @@ silently-downgraded nav — see `scripts/prerender.mjs` in the base repo. In
 dev (`npm run dev`), a mega/not-installed mismatch also shows a red banner
 on the page itself, not just a console warning, since that build-time check
 doesn't run under `npm run dev`.
+
+## Mega nav looks
+
+Pick a starting look with `megaPreset`, then override any single option.
+
+| `megaPreset` | What it looks like |
+|---|---|
+| `classic` (default) | Rounded panel centered under the parent, links highlight as soft chips |
+| `flush` | Square panel, links run edge to edge, grouped columns split by hairlines |
+| `tabbed` | Open parent fills with the accent color; the panel hangs off it with a matching top edge |
+| `underline` | No fills: an accent bar under the top link, an accent underline on drop links |
+| `sidebar` | Flush links with an accent stripe on the left edge on hover |
+| `store` | Full-width panel, columns aligned to the page content (classic retail mega menu) |
+| `dark` | Dark bar and panel (the theme's `--surface-2`), pill-shaped top links |
+| `brand` | Bar in `--primary`, panel in `--primary-2`, white text |
+
+```js
+// config/nav.js
+nav: {
+  style: 'mega',
+  megaPreset: 'tabbed',
+  // any of these override the preset, one at a time:
+  colorway:   'light',   // 'light' | 'tinted' | 'dark' | 'brand'
+  corners:    'square',  // 'rounded' | 'square' | 'pill'
+  dropStyle:  'flush',   // 'inset' | 'flush' | 'bar' | 'underline'
+  topStyle:   'tab',     // 'plain' | 'underline' | 'pill' | 'tab'
+  panelAlign: 'start',   // 'center' | 'start' | 'full'
+  highlight:  'fill',    // 'fill' (tinted background) | 'text' (color only)
+
+  // colors, all optional (any CSS color):
+  hoverBg:    '#f4efe6', // highlight background — top links AND drop links
+  hoverText:  '#c0392b', // highlight text color — top links AND drop links
+  accent:     '#c0392b', // tab fill, underline bars, sidebar stripe
+  accentText: '#ffffff', // text on the tab fill
+  navBg:      '#111',    // bar (and mobile drawer) background
+  navText:    '#eee',
+  panelBg:    '#1b1b1b',
+  panelText:  '#eee',
+}
+```
+
+- **Top links and drop links share one highlight.** `hoverBg` / `hoverText`
+  (or the colorway's defaults) apply to both levels, including the active
+  page, so the bar and the panel always match.
+- **Colorways recolor the whole nav,** not just the panel, so the highlight
+  stays readable at both levels. If `hoverText` clashes with a dark or brand
+  colorway, that's the override winning; drop it to get the colorway's.
+- **The `dark` colorway uses `--footer-accent`** for its accent when the
+  theme sets it (for themes whose `--primary` is too dark to read on
+  `--surface-2`), otherwise `--primary`. Set `accent` to choose your own.
+- **Logo options carry over.** The mega nav reads the same `nav.logo` block
+  as the base nav (`display: 'inline' | 'overhang' | 'tab'`, `height`,
+  `mobileHeight`, `withText`, `shrinkOnScroll`), so switching `nav.style`
+  to `'mega'` keeps your logo layout. The tab plate stays a light surface in
+  the dark and brand colorways.
+- Panels that would run off either edge of the screen slide back in.
+- A parent stays highlighted while you're on any of its child pages.
+- Style options are desktop only. The mobile drawer is always the same tap
+  accordion, colored to match the colorway.
+- Unknown option names log a warning in dev and fall back to the preset.
 
 ## Chart module
 
