@@ -169,6 +169,11 @@ nav: {
 - **The `dark` colorway uses `--footer-accent`** for its accent when the
   theme sets it (for themes whose `--primary` is too dark to read on
   `--surface-2`), otherwise `--primary`. Set `accent` to choose your own.
+- **Logo options carry over.** The mega nav reads the same `nav.logo` block
+  as the base nav (`display: 'inline' | 'overhang' | 'tab'`, `height`,
+  `mobileHeight`, `withText`, `shrinkOnScroll`), so switching `nav.style`
+  to `'mega'` keeps your logo layout. The tab plate stays a light surface in
+  the dark and brand colorways.
 - Panels that would run off either edge of the screen slide back in.
 - A parent stays highlighted while you're on any of its child pages.
 - Style options are desktop only. The mobile drawer is always the same tap

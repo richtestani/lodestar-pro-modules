@@ -23,6 +23,10 @@ will silently do nothing.
   `tab`), `panelAlign` (`center` / `start` / `full`) and `highlight` (`fill` /
   `text`). New optional colors: `accent`, `accentText`, `navBg`, `navText`,
   `panelBg`, `panelText`.
+- Logo layouts from the base nav: the mega nav now honors `nav.logo`
+  (`inline` / `overhang` / `tab`, `height`, `mobileHeight`, `withText`,
+  `shrinkOnScroll`). Previously it ignored the block and drew a fixed 34px
+  logo.
 - Open panels slide back on-screen instead of running off the viewport edge.
 - A dropdown parent is highlighted while you're on one of its pages.
 - Escape closes an open panel.

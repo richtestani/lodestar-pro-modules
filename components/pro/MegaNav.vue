@@ -3,7 +3,10 @@
     id="main-nav"
     ref="navEl"
     class="nav--mega"
-    :class="{ 'is-sticky': sticky, 'is-open': menuOpen, 'overlay-off': !overlay }"
+    :class="[`logo--${logoDisplay}`, {
+      'is-sticky': sticky, 'is-open': menuOpen, 'overlay-off': !overlay,
+      'is-scrolled': scrolled, 'logo--shrinks': shrinks,
+    }]"
     :data-colorway="opt.colorway"
     :data-corners="opt.corners"
     :data-drop="opt.dropStyle"
@@ -12,9 +15,9 @@
     :data-highlight="opt.highlight"
     :style="navStyleVars"
   >
-    <RouterLink to="/" class="nav-logo" @click="close">
-      <img v-if="logoImage" :src="asset(logoImage)" :alt="brand.name" class="nav-logo-img" />
-      <span v-else>{{ brand.logoText || brand.name }}</span>
+    <RouterLink to="/" class="nav-logo" :class="{ 'has-image': logoImage }" :aria-label="logoImage && !logo.withText ? brand.name : undefined" @click="close">
+      <img v-if="logoImage" :src="asset(logoImage)" :alt="logo.withText ? '' : brand.name" class="nav-logo-img" />
+      <span v-if="!logoImage || logo.withText" class="nav-logo-text">{{ brand.logoText || brand.name }}</span>
     </RouterLink>
 
     <button
@@ -147,6 +150,22 @@ const CHOICES = {
 const brand     = site.brand
 const logoImage = brand.logoImage
 const sticky    = site.nav.sticky !== false
+
+// Logo layout — same `nav.logo` block as the base AppNav (see the base
+// repo's config/nav.js), so switching nav.style keeps the logo as-is.
+// Only applies when brand.logoImage is set; a text logo sits inline.
+const LOGO_DISPLAYS = ['inline', 'overhang', 'tab']
+const logo = site.nav.logo || {}
+const logoDisplay = logoImage && LOGO_DISPLAYS.includes(logo.display) ? logo.display : 'inline'
+if (import.meta.env.DEV && logo.display && !LOGO_DISPLAYS.includes(logo.display)) {
+  console.warn(`[lodestar-pro-modules] nav.logo.display "${logo.display}" isn't one of ${LOGO_DISPLAYS.join(', ')}, using inline`)
+}
+const logoHeight = logo.height || (logoDisplay === 'inline' ? 36 : 96)
+const logoMobileHeight = logo.mobileHeight || (logoDisplay === 'inline' ? Math.min(logoHeight, 32) : Math.round(logoHeight * 0.65))
+// Overhanging logos tuck back into the bar once the page scrolls (sticky nav only)
+const shrinks = logoDisplay !== 'inline' && sticky && logo.shrinkOnScroll !== false
+const scrolled = ref(false)
+const onScroll = () => { scrolled.value = window.scrollY > 24 }
 const iconClass = { 'icon-right': (site.nav.iconPosition || 'left') === 'right' }
 const trigger   = site.nav.trigger === 'hover' ? 'hover' : 'click' // default click — hover only applies when overlay is true, see README
 const overlay   = site.nav.overlay !== false                       // default true (floats over the page)
@@ -201,7 +220,7 @@ const COLOR_VARS = {
   accent: '--mn-accent', accentText: '--mn-accent-text',
 }
 const navStyleVars = computed(() => {
-  const v = {}
+  const v = { '--logo-h': `${logoHeight}px`, '--logo-h-mobile': `${logoMobileHeight}px` }
   for (const [key, vars] of Object.entries(COLOR_VARS)) {
     if (site.nav[key]) for (const name of [].concat(vars)) v[name] = site.nav[key]
   }
@@ -266,11 +285,13 @@ function toggle(){ menuOpen.value ? close() : open() }
 onMounted(() => {
   document.addEventListener('click', onDocClick)
   document.addEventListener('keydown', onKey)
+  if (shrinks) { onScroll(); window.addEventListener('scroll', onScroll, { passive: true }) }
 })
 onUnmounted(() => {
   document.body.style.overflow = ''
   document.removeEventListener('click', onDocClick)
   document.removeEventListener('keydown', onKey)
+  window.removeEventListener('scroll', onScroll)
   clearTimeout(hoverCloseTimer)
 })
 </script>
@@ -358,11 +379,37 @@ onUnmounted(() => {
 #main-nav.is-sticky { position: fixed; }
 
 .nav-logo {
+  display: inline-flex; align-items: center; gap: 0.7rem; flex-shrink: 0; position: relative; z-index: 2;
   font-family: var(--font-display); font-size: 1.15rem;
   font-weight: var(--logo-weight, 600); letter-spacing: var(--logo-tracking, 0.12em);
-  color: var(--mn-logo); flex-shrink: 0;
+  color: var(--mn-logo);
 }
-.nav-logo-img { height: 34px; width: auto; }
+.nav-logo-img { display: block; width: auto; max-width: 260px; object-fit: contain; transition: height 0.25s ease; }
+
+/* ── Logo layouts (nav.logo.display) — mirrors the base AppNav ──
+   inline   — fits inside the bar
+   overhang — taller than the bar, hangs past its bottom edge
+   tab      — overhang on a backing plate hung from the top edge   */
+.logo--inline .nav-logo-img { height: min(var(--logo-h), calc(var(--nav-height) - 18px)); }
+.logo--overhang .nav-logo,
+.logo--tab .nav-logo { align-self: flex-start; transition: padding 0.25s ease, margin 0.25s ease, box-shadow 0.25s ease; }
+.logo--overhang .nav-logo { margin-top: 12px; }
+.logo--overhang .nav-logo-img,
+.logo--tab .nav-logo-img { height: var(--logo-h); }
+.logo--overhang .nav-logo-img { filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.18)); }
+/* the plate stays a light surface in every colorway — logo art is
+   usually drawn for a light background */
+.logo--tab .nav-logo {
+  padding: 14px 18px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border); border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: var(--shadow-lg);
+}
+/* Shrink on scroll: settle back inside the bar */
+.logo--shrinks.is-scrolled .nav-logo { align-self: center; margin-top: 0; }
+.logo--shrinks.is-scrolled .nav-logo-img { height: calc(var(--nav-height) - 20px); filter: none; }
+.logo--tab.logo--shrinks.is-scrolled .nav-logo { padding-block: 0; background: transparent; border-color: transparent; box-shadow: none; }
 
 .nav-links { display: flex; align-items: center; gap: 0.25rem; list-style: none; }
 .nav-item { position: relative; display: flex; align-items: center; }
@@ -545,6 +592,12 @@ onUnmounted(() => {
 
 @media (max-width: 768px) {
   .nav-burger { display: flex; }
+  .logo--inline .nav-logo-img { height: min(var(--logo-h-mobile), calc(var(--nav-height) - 18px)); }
+  .logo--overhang .nav-logo-img,
+  .logo--tab .nav-logo-img { height: var(--logo-h-mobile); }
+  .logo--tab .nav-logo { padding: 10px 12px 12px; }
+  .logo--overhang .nav-logo { margin-top: 10px; }
+  .nav-logo-text { font-size: 1rem; }
   .nav-links {
     position: fixed; top: 0; right: 0; width: min(340px, 86vw); height: 100dvh;
     flex-direction: column; align-items: stretch; gap: 0;
