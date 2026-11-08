@@ -12,6 +12,35 @@ will silently do nothing.
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-11-08
+
+### Added
+- **Mega nav looks** — `megaPreset`: `classic`, `flush`, `tabbed`,
+  `underline`, `sidebar`, `store`, `dark`, `brand`. Each is a set of
+  individually overridable options: `colorway` (`light` / `tinted` / `dark` /
+  `brand`), `corners` (`rounded` / `square` / `pill`), `dropStyle` (`inset` /
+  `flush` / `bar` / `underline`), `topStyle` (`plain` / `underline` / `pill` /
+  `tab`), `panelAlign` (`center` / `start` / `full`) and `highlight` (`fill` /
+  `text`). New optional colors: `accent`, `accentText`, `navBg`, `navText`,
+  `panelBg`, `panelText`.
+- Open panels slide back on-screen instead of running off the viewport edge.
+- A dropdown parent is highlighted while you're on one of its pages.
+- Escape closes an open panel.
+
+### Fixed
+- Dropdown parents ("Our Collection") rendered at body size and weight,
+  larger than the plain links beside them — the trigger button's
+  `font: inherit` reset the nav link type.
+- The mega nav ignored the theme's `--nav-link-size` / `-weight` /
+  `-tracking` / `-case` tokens (e.g. Press's larger nav type), so it didn't
+  match the base nav.
+- Drop-link hover didn't match the top bar: with no `hoverBg` set it fell
+  back to `--surface-2`, a near-black surface in most themes (invisible text
+  in Press). Both levels now use one shared highlight.
+- Mobile accordion panels used the same `--surface-2` background, making
+  sub-links hard to read.
+
+
 ## [0.6.0] — 2026-11-07
 
 ### Added
