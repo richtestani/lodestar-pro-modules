@@ -4,7 +4,7 @@ Premium modules and nav styles for [Lodestar](https://github.com/richtestani/lod
 Kept out of the base repo so every client site starts lean by default —
 this only exists in a project once you install it there.
 
-**v0.7.0 · requires lodestar >= 0.2.0** (section motion needs the newer SectionRenderer hook) — see `CHANGELOG.md` for release notes.
+**v0.8.0 · requires lodestar >= 0.2.0** (section motion needs the newer SectionRenderer hook) — see `CHANGELOG.md` for release notes.
 
 ## What's in here
 
@@ -19,6 +19,11 @@ this only exists in a project once you install it there.
   performer's show listing with month grouping, ticket links, status
   badges, a compact "next shows" layout and `MusicEvent` structured
   data. See below.
+- **`untangle` module** (`modules/pro/UntangleModule.vue`) — a
+  fidget-able before/after of a messy tech stack. Tools jiggle in a
+  tangled web visitors can drag and fling; "Analyze" merges the redundant
+  ones, drops the dead ones and settles the rest into clean lanes. See
+  below.
 - **Section motion** (`components/pro/SectionMotion.vue`) — every
   top-level page section reveals as it scrolls into view, with optional
   item stagger and full-screen-height sections. Applies to all modules
@@ -303,6 +308,79 @@ offer price. Check a live page with Google's Rich Results Test.
 **Keep private details out.** Everything in config ships in the site's
 JavaScript, so don't put performance fees, private-event dates or contact
 details here.
+
+## Untangle module
+
+An interactive "before and after" for a tech or operations business. The
+section opens on a living, slightly jiggly web of a client's tools —
+problem tools flagged red with a note on hover (tap on touch). Visitors
+can drag and fling anything. **Analyze** reorganizes it: redundant tools
+glide into the tool that replaces them and merge, dead ones fade out, the
+rest settle into labeled lanes joined by flowing connections, renamed
+where it makes sense, and the counts above tick down. Then an optional
+result line and button.
+
+```js
+{ module: 'untangle', props: {
+    eyebrow: 'See it for yourself',
+    title:   'Your tech stack, untangled',
+    intro:   'Poke at it, then let us sort it out.',
+    result:  'Five fewer tools to pay for. One place your data lives.',
+    cta:     { label: 'Map my stack', to: '/contact' },
+}}
+```
+
+That alone shows a built-in small-business demo (CRM, POS, QuickBooks,
+two email platforms, two clouds, three spreadsheets, an old server). To
+tell your own story, add `lanes`, `nodes`, `links` and `cleanLinks`:
+
+```js
+{ module: 'untangle', props: {
+    lanes: ['Intake', 'Practice', 'Billing'],          // column (or row, on phones) labels
+    nodes: [
+      { id: 'clio',  label: 'Clio',      lane: 'Practice' },
+      { id: 'forms', label: 'Web forms', lane: 'Intake' },
+      { id: 'qb',    label: 'QuickBooks', lane: 'Billing' },
+      { id: 'xl',    label: 'Billing.xlsx', lane: 'Billing', cleanLabel: 'Automated invoicing',
+        issue: 'Hours re-typed from Clio every month' },
+      { id: 'fax',   label: 'eFax',  mergeInto: 'forms', issue: 'Intake still arrives by fax' },
+      { id: 'nas',   label: 'Office NAS', remove: true, issue: 'Backups last checked in 2022' },
+    ],
+    links:      [['forms', 'clio'], ['fax', 'clio'], ['clio', 'xl'], ['xl', 'qb'], ['nas', 'clio']],
+    cleanLinks: [['forms', 'clio'], ['clio', 'xl'], ['xl', 'qb']],
+}}
+```
+
+**Per node:** `id` (required, unique), `label`, `lane` (a lane name or
+index; only kept tools use it — missing means the middle lane),
+`cleanLabel` (its name after Analyze), `issue` (red flag plus a note),
+`mergeInto` (the id it folds into), `remove: true` (fades out). A node
+with neither `mergeInto` nor `remove` is kept.
+
+**Links:** `links` is the mess, `cleanLinks` the after; both are
+`[fromId, toId]` pairs. Clean links that touch a merged or removed tool
+are skipped. Bad ids are skipped with a warning in dev.
+
+**Section props:** `analyzeLabel` (`'Analyze'`), `resetLabel`
+(`'Tangle it again'`), `hint` (the line under the graph; `''` hides it),
+`statLabels` (`{ tools, connections, issues }` — the words after each
+count), `issueColor` (`'#d64545'`), `result`, `cta` (`{ label, to }`; a
+`to` starting with `/` is a site link, anything else a plain link),
+`onSurface`.
+
+- The counts are worked out from your data: every node / kept nodes,
+  `links` / `cleanLinks`, nodes with an `issue` / 0.
+- Wide screens get columns; below 560px the lanes become rows.
+- Clean lanes take their slots in the order the tools sit when Analyze is
+  pressed, so nothing crosses on the way in.
+- Colors come from the theme (`--primary` for the clean state).
+- The animation pauses while the section is off screen and stops once
+  the clean layout settles.
+- The prerendered HTML gets a settled, identical-every-build layout.
+  Reduced-motion visitors get no jiggle, and Analyze jumps straight to
+  the result. Screen readers get a text summary of the problems and an
+  announcement after Analyze.
+- Six to fourteen tools reads best. Keep notes short — they're a tooltip.
 
 ## Section motion
 

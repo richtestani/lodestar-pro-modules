@@ -84,9 +84,9 @@ const hasMotionConfig = fs.existsSync(path.join(target, 'src/config/motion.js'))
 
 if (modulesOk && componentsOk) {
   console.log(`✓ Installed lodestar-pro-modules v${MY_VERSION} into ${target} (verified byte-for-byte)`)
-  console.log(`  src/modules/pro/     (parallax, chart)`)
+  console.log(`  src/modules/pro/     (parallax, chart, tourDates, untangle)`)
   console.log(`  src/components/pro/  (mega nav, section motion)`)
-  console.log(`\nNext: reference module: 'parallax' or 'chart' in homeSections, or set nav.style: 'mega' in site.config.js.`)
+  console.log(`\nNext: reference module: 'parallax', 'chart', 'tourDates' or 'untangle' in homeSections, or set nav.style: 'mega' in site.config.js.`)
   if (!hasMotionHook || !hasMotionConfig) {
     console.warn(`\n! Section motion is installed but this project predates the base hook it needs:`)
     if (!hasMotionHook)   console.warn(`  - src/components/SectionRenderer.vue doesn't pick up components/pro/SectionMotion.vue`)

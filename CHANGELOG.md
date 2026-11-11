@@ -12,6 +12,22 @@ will silently do nothing.
 
 ## [Unreleased]
 
+## [0.8.0] — 2026-11-11
+
+### Added
+- **`untangle` module** (`modules/pro/UntangleModule.vue`) — an
+  interactive before/after of a messy tech stack. A jiggling web of tools
+  visitors can drag and fling, with problem tools flagged and a note on
+  hover or tap. "Analyze" merges redundant tools into their replacements,
+  fades removed ones, settles the rest into labeled lanes with flowing
+  connections and counts the tools, connections and issues down. Optional
+  result line and CTA. Columns on wide screens, rows on phones. Built-in
+  small-business demo when no `nodes` are given
+  (`modules/pro/untangleDemo.js`). Plain SVG with a small spring
+  simulation, no dependencies; pauses off screen and stops when settled.
+  Prerender gets a deterministic still frame; reduced motion skips the
+  jiggle and the transition.
+
 ## [0.7.0] — 2026-11-08
 
 ### Added
