@@ -9,10 +9,12 @@ import ParallaxModule from './ParallaxModule.vue'
 import ChartModule    from './ChartModule.vue'
 import TourDatesModule from './TourDatesModule.vue'
 import UntangleModule  from './UntangleModule.vue'
+import ChartHeroModule from './ChartHeroModule.vue'
 
 export const proModuleRegistry = {
   parallax: ParallaxModule,
   chart:    ChartModule,
   tourDates: TourDatesModule,
   untangle:  UntangleModule,
+  chartHero: ChartHeroModule,
 }

@@ -4,7 +4,7 @@ Premium modules and nav styles for [Lodestar](https://github.com/richtestani/lod
 Kept out of the base repo so every client site starts lean by default —
 this only exists in a project once you install it there.
 
-**v0.8.0 · requires lodestar >= 0.2.0** (section motion needs the newer SectionRenderer hook) — see `CHANGELOG.md` for release notes.
+**v0.9.0 · requires lodestar >= 0.2.0** (section motion needs the newer SectionRenderer hook) — see `CHANGELOG.md` for release notes.
 
 ## What's in here
 
@@ -24,6 +24,11 @@ this only exists in a project once you install it there.
   tangled web visitors can drag and fling; "Analyze" merges the redundant
   ones, drops the dead ones and settles the rest into clean lanes. See
   below.
+- **`chartHero` module** (`modules/pro/ChartHeroModule.vue`) — a dark,
+  full-width hero with a floating chart card: bars grow in on load, a
+  trend line draws across them, stage labels line up under the bars.
+  Gradient background, optional photo, grid texture and orbit rings.
+  See below.
 - **Section motion** (`components/pro/SectionMotion.vue`) — every
   top-level page section reveals as it scrolls into view, with optional
   item stagger and full-screen-height sections. Applies to all modules
@@ -228,6 +233,48 @@ any module:
 - **One chart** gets a presentation layout: the number and text on the
   left, a large chart on the right, stacking on phones. **Two or more**
   sit side by side and wrap as needed.
+
+## Chart hero module
+
+A hero for consultancies, SaaS and anything selling "results": headline
+copy on the left, a chart card on the right that animates as the page
+loads.
+
+```js
+{ module: 'chartHero', props: {
+    eyebrow:     'Independent Executive Technology Advisory',
+    title:       'Turn Technology Investment Into',
+    titleAccent: 'Business Value.',              // own line, in the accent color
+    subtitle:    'Technology should accelerate your business…',
+    primaryCta:   { label: 'Schedule a Conversation', to: '/contact' },
+    secondaryCta: { label: 'Take the Free Assessment', to: '/assessment' },
+    accent: '#3fc1b4',                            // optional; default the theme's --primary
+    card: {
+      eyebrow: 'Business Value Framework',
+      title:   'Strategy → Execution',            // '→' is drawn in the accent color
+      data:    [16, 28, 40, 57, 74, 94],          // numbers or { label, value }
+      stages:  ['Clarity', 'Priorities', 'Outcomes'],
+    },
+}}
+```
+
+- **`stages`** are spread across the bars and each sits under its share
+  (six bars, three stages → two bars each), so labels always line up.
+- **`card.trend: false`** drops the line across the bar tops.
+- **Background:** a dark gradient by default. `bgFrom` / `bgTo` change its
+  two stops; `image` adds a photo under it (toned down so copy stays
+  readable). `grid: false` removes the grid texture, `orbits: false` the
+  rings behind the card.
+- **`align: 'center'`** centers the copy and puts the card underneath.
+- **`delay`** (ms, default 350) — when the bars start.
+- Leave out `card` for a text-only dark hero.
+- The hero is always dark: inside it, `--text`, `--text-muted` and
+  `--border` are redefined, so it works with light themes.
+- **Animation** is CSS keyframes, not the scroll-armed transitions the
+  chart module uses. A hero is always on the first screen, so it plays as
+  the page paints, with no JS and no flash of hidden content. The
+  prerendered HTML holds the finished chart; reduced-motion visitors see
+  it finished.
 
 ## Tour dates module
 

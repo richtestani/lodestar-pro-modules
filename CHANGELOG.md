@@ -12,6 +12,18 @@ will silently do nothing.
 
 ## [Unreleased]
 
+## [0.9.0] — 2026-11-11
+
+### Added
+- **`chartHero` module** (`modules/pro/ChartHeroModule.vue`) — a dark
+  hero with headline copy and a floating chart card. Bars grow in one
+  after another, a trend line draws across their tops and the last point
+  lands with a pulse. Stage labels span their share of the bars. Gradient
+  background (`bgFrom` / `bgTo`), optional `image`, grid texture and
+  slowly turning orbit rings. `align: 'center'` stacks the card under the
+  copy. Pure CSS animation: plays on first paint, nothing hidden in the
+  prerender, off for reduced motion.
+
 ## [0.8.0] — 2026-11-11
 
 ### Added
